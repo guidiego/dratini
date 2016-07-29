@@ -1,2 +1,3 @@
-# yltJS
-Your Language to JavaScript! A generic Node + ES6 compiler to create your language!
+# Dratini  
+
+Create funny programming languages or create simple transpiles to improve your performance on coding!
