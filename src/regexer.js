@@ -27,12 +27,19 @@ function Regexer(json) {
                 }    
             })
             
+            var phrasex = key.replace(/\{\{(.*?)\}\}/g, function (v) {
+                if (v.indexOf("~") > -1) return '((\\w+|\\d+) |(\\w+|\\d+))(=|==|===|!=|!==|>|<|<=|>=|>>|><|<<|<>)( (\\w+|\\d+)|(\\w+|\\d+))';
+                return '((\\w|\\d|"(.*?)")+(\\s)?,(\\s)?|)+(\\w|\\d|"(.*?)"|\\(.*\\))+';
+            });
+
+            if (!line.match(phrasex)) return;
+
             if (typeof template == 'string') {
                 Object.keys(realDiff).forEach(function (key) {
-                    var regex = new RegExp('\\{\\{' + key + '\\}\\}');
-                    template.replace(regex, realDiff[key])
+                    var regex = new RegExp('\\{\\{' + key + '\\}\\}', "g");
+                    template = template.replace(regex, realDiff[key])
                 })
-                
+            
                 line = template;  
             } else {
                 line = template(realDiff, lineObj, {prev: json[index - 1], next: json[index + 1]})
