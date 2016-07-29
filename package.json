@@ -1,0 +1,33 @@
+{
+  "name": "ylta",
+  "version": "1.0.0",
+  "description": "Your Language to JavaScript! A generic Node + ES6 compiler to create your language!",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guidiego/yltJS.git"
+  },
+  "keywords": [
+    "javascript",
+    "node",
+    "js",
+    "parser",
+    "language",
+    "transpile"
+  ],
+  "author": "Guilherme Diego <guilherme.expgames@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/guidiego/yltJS/issues"
+  },
+  "homepage": "https://github.com/guidiego/yltJS#readme",
+  "dependencies": {
+    "diff": "^2.2.3"
+  }
+}

@@ -1,4 +1,5 @@
-var args = require('./config');
+var args = require('../formulas/ruby.formula');
+var diff = require('diff').diffWords;
 
 function Regexer(json) {
     var code = "";
@@ -7,34 +8,35 @@ function Regexer(json) {
         
         Object.keys(args.conversors).forEach(function (key) {
             var variables = [];
+            var diffs = diff(key, line.trim());
+            var lastRemove = null;
+            var realDiff = {};
+            var template = args.conversors[key];
             
-            if (key.indexOf("$") == -1) {
-                line = line.replace(new RegExp(key, "g"), args[key]);
+            if (key.indexOf("{{") == -1 && key.indexOf("}}") == -1) {
+                line = line.replace(new RegExp(key, "g"), args.conversors[key]);
                 return;   
             }
             
-            var phrasex = key.replace(/(\$+.*)/g, function (x) {
-                variables.push(x);
-                
-                
-                if (x.replace("$", "").indexOf("$") > -1) return '((\\w+|\\d+) |(\\w+|\\d+))(=|==|===|!=|!==|>|<|<=|>=|>>|><|<<|<>)( (\\w+|\\d+)|(\\w+|\\d+))'
-                return '((\\w|\\d|"(.*?)")+(\\s)?,(\\s)?|)+(\\w|\\d|"(.*?)"|\\(.*\\))+';
+            diffs.filter(function (d) {
+                if (d.removed) {
+                    lastRemove = d.value.replace(/\{|\}/g, "");
+                } else if (lastRemove) {
+                    realDiff[lastRemove] = d.value;
+                    lastRemove = null;
+                }    
             })
             
-            
-            var simplePhrase = key.replace(/(\$.*)/g, '');
-            
-            line = line.replace(new RegExp(phrasex, "g"), function (text) {
-                var arg = text.replace(simplePhrase, '');
-                var template = args.conversors[key];
-     
-                if (typeof template == 'string') {
-                    variables.forEach(function (v){ template = template.replace(v, arg) })
-                    return template;
-                } else {
-                    return template(arg, lineObj, json[index + 1]);
-                }
-            })
+            if (typeof template == 'string') {
+                Object.keys(realDiff).forEach(function (key) {
+                    var regex = new RegExp('\\{\\{' + key + '\\}\\}');
+                    template.replace(regex, realDiff[key])
+                })
+                
+                line = template;  
+            } else {
+                line = template(realDiff, lineObj, {prev: json[index - 1], next: json[index + 1]})
+            }
         })      
     
         code += "\n" + line;

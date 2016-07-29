@@ -15,7 +15,7 @@ function recursiveCount(line, level) {
 
 
 function Compile() {
-    fs.readFile('./src/sum.rb', {encoding: 'utf-8'}, function (err, file) {
+    fs.readFile('./test/sum.rb', {encoding: 'utf-8'}, function (err, file) {
         var code = file;
         var json = [];
         

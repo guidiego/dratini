@@ -6,6 +6,7 @@ class Sum
     def execute()
         @a + @b 
     end
+end
 
 s = Sum.new(1, 2)
 s.execute()
